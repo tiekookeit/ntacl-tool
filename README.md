@@ -75,6 +75,31 @@ Official Debian package references used to confirm the packages:
 - `winbind` package details on Debian:
   https://packages.debian.org/bookworm/winbind
 
+### Operational Prerequisites
+
+Besides installing the packages, the environment must already have Samba installed and configured in a way that supports:
+
+- the `samba-tool` command;
+- `samba-tool ntacl` operations;
+- `wbinfo -u` listing domain users;
+- `wbinfo -g` listing domain groups.
+
+Recommended quick checks:
+
+```bash
+samba-tool --help
+wbinfo -u
+wbinfo -g
+```
+
+Expected behavior:
+
+- `samba-tool --help` should run successfully.
+- `wbinfo -u` should list users.
+- `wbinfo -g` should list groups.
+
+If these commands do not work, this tool will not operate correctly.
+
 ## Important Environment Notes
 
 Installing the packages alone is not sufficient if the server is not correctly integrated with the Samba / AD environment.
@@ -82,8 +107,11 @@ Installing the packages alone is not sufficient if the server is not correctly i
 In practice, for the script to work usefully, the host usually needs to:
 
 - Have access to the Samba / AD environment.
+- Have Samba installed and configured.
 - Be able to execute `samba-tool ntacl`.
 - Be able to resolve users and groups through `wbinfo`.
+- Be able to list users with `wbinfo -u`.
+- Be able to list groups with `wbinfo -g`.
 
 If `wbinfo` cannot resolve names or SIDs, the script may still work partially, but friendly identity display and some name-based operations may fail.
 
