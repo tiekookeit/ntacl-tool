@@ -68,6 +68,7 @@ Observações:
   - Dependências externas: samba-tool e wbinfo
   - O modo 'set' não aplica nada sem --apply; use --dry-run para pré-visualizar
   - A ferramenta emite aviso se 'DA' não ficar com controle total ao final
+  - Permissões aceitas em --add/--remove: read, modify, full ou máscara hexadecimal como 0x001f01ff
 """
 
 
@@ -617,7 +618,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--add",
         action="append",
         metavar="SPEC",
-        help="adiciona ACE. Ex.: principal=DOM\\\\usuario,perm=modify,flags=OICI,type=A",
+        help="adiciona ACE. Permissões: read, modify, full ou máscara hexadecimal. Ex.: principal=DOM\\\\usuario,perm=modify,flags=OICI,type=A",
     )
     set_parser.add_argument(
         "--remove-index",
@@ -630,7 +631,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--remove",
         action="append",
         metavar="SPEC",
-        help="remove ACEs por filtro. Ex.: principal=DU,type=A ou sid=S-1-5-...,mask=0x001200a9",
+        help="remove ACEs por filtro. Permissões/máscaras aceitas: read, modify, full ou 0x.... Ex.: principal=DU,type=A,perm=read ou sid=S-1-5-...,mask=0x001200a9",
     )
     set_parser.add_argument("--dry-run", action="store_true", help="mostra o resultado final sem aplicar")
     set_parser.add_argument("--apply", action="store_true", help="aplica efetivamente a ACL final")
