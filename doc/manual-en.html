@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ntacl_tool Manual</title>
+  <style>
+    :root {
+      --bg: #f4f1e8;
+      --paper: #fffdf8;
+      --ink: #1e1b18;
+      --muted: #6a6257;
+      --line: #d8cfbf;
+      --accent: #8f2d1b;
+      --accent-soft: #f6e1d8;
+      --code: #27231f;
+      --code-bg: #f1ece2;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Georgia", "Times New Roman", serif;
+      background:
+        radial-gradient(circle at top left, rgba(143, 45, 27, 0.08), transparent 28%),
+        linear-gradient(180deg, #efe7d8 0%, var(--bg) 35%, #eee7db 100%);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    .hero {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 18px 60px rgba(36, 28, 21, 0.08);
+      padding: 28px;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: linear-gradient(90deg, var(--accent), #c56c3c, #d5a46c);
+    }
+
+    h1, h2, h3 {
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(2.2rem, 4vw, 4rem);
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.5rem;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 8px;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 1.05rem;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    .lead {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 900px;
+    }
+
+    .stamp {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 6px 10px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      background: var(--accent-soft);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .card, .section {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 30px rgba(36, 28, 21, 0.05);
+    }
+
+    .card {
+      padding: 18px;
+    }
+
+    .section {
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    code {
+      font-family: "Courier New", monospace;
+      font-size: 0.95em;
+      background: var(--code-bg);
+      padding: 0.15em 0.35em;
+      border-radius: 3px;
+    }
+
+    pre {
+      margin: 0 0 18px;
+      padding: 16px;
+      overflow: auto;
+      background: var(--code);
+      color: #f4eee7;
+      border: 1px solid #3b332d;
+      border-radius: 6px;
+    }
+
+    pre code {
+      background: transparent;
+      padding: 0;
+      color: inherit;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      padding: 14px 16px;
+      margin: 16px 0;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+    }
+
+    @media (max-width: 820px) {
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>ntacl_tool</h1>
+      <p class="lead">
+        A command-line utility for inspecting and changing NT ACLs through Samba, with both interactive and direct parameter-based workflows.
+      </p>
+      <div class="stamp">Manual Page / Quick Start</div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h2>What It Is</h2>
+        <p>ntacl_tool reads and updates NT security descriptors stored as SDDL on Samba-managed paths.</p>
+        <p class="muted">Use it when you need safe ACL staging, permission changes, inheritance control, and repeatable CLI operations.</p>
+      </article>
+      <article class="card">
+        <h2>Who It Helps</h2>
+        <p>Sysadmins, Samba/AD operators, file server maintainers, and anyone automating folder permission changes.</p>
+      </article>
+      <article class="card">
+        <h2>Core Mode Split</h2>
+        <p><code>interactive</code> for guided editing.</p>
+        <p><code>show</code> for inspection.</p>
+        <p><code>set</code> for direct, script-friendly changes.</p>
+      </article>
+    </section>
+
+    <section class="section two-col">
+      <div>
+        <h2>Why This Tool Exists</h2>
+        <p>
+          Working with NT ACLs directly through SDDL is precise but cumbersome. ntacl_tool provides a friendlier operational layer on top of
+          <code>samba-tool ntacl get --as-sddl</code> and <code>samba-tool ntacl set</code>.
+        </p>
+        <p>It helps with three common needs:</p>
+        <ul>
+          <li>Inspect the current ACL in a readable format.</li>
+          <li>Modify permissions in a staged way before applying them.</li>
+          <li>Run direct changes from scripts without opening the interactive menu.</li>
+        </ul>
+      </div>
+      <aside>
+        <h2>Requirements</h2>
+        <ul>
+          <li><code>python3</code></li>
+          <li><code>samba-tool</code> from <code>samba-common-bin</code></li>
+          <li><code>wbinfo</code> from <code>winbind</code></li>
+        </ul>
+        <pre><code>sudo apt update
+sudo apt install -y python3 samba-common-bin winbind</code></pre>
+      </aside>
+    </section>
+
+    <section class="section">
+      <h2>Command Layout</h2>
+      <pre><code>ntacl_tool.py interactive PATH
+ntacl_tool.py show PATH [--json]
+ntacl_tool.py set PATH [OPTIONS]</code></pre>
+      <div class="note">
+        The <code>set</code> command does not apply changes unless you pass <code>--apply</code>. Use <code>--dry-run</code> to review the final ACL first.
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Interactive Mode</h2>
+      <p>Use interactive mode when you want a guided menu and a visible staging area before applying changes.</p>
+      <pre><code>python3 ntacl_tool.py interactive /srv/shares/finance/private</code></pre>
+      <p>From the menu you can:</p>
+      <ul>
+        <li>Disable inheritance and keep inherited ACEs as explicit entries.</li>
+        <li>Disable inheritance and drop inherited ACEs.</li>
+        <li>Enable inheritance again.</li>
+        <li>Add permissions.</li>
+        <li>Remove permissions.</li>
+        <li>Review the predicted final SDDL before applying.</li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2>Inspection Examples</h2>
+      <h3>Show current ACL</h3>
+      <pre><code>python3 ntacl_tool.py show /srv/shares/finance/private</code></pre>
+
+      <h3>Show JSON output</h3>
+      <pre><code>python3 ntacl_tool.py show /srv/shares/finance/private --json</code></pre>
+      <p class="muted">Useful for integration with shell scripts, automation, and auditing pipelines.</p>
+    </section>
+
+    <section class="section">
+      <h2>Inheritance Control</h2>
+      <h3>Disable inheritance and keep inherited entries</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --disable-inheritance \
+  --dry-run</code></pre>
+
+      <h3>Disable inheritance and remove inherited entries</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --disable-inheritance \
+  --drop-inherited \
+  --dry-run</code></pre>
+
+      <h3>Enable inheritance again</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --enable-inheritance \
+  --dry-run</code></pre>
+
+      <p class="muted">
+        In the current implementation, enabling inheritance removes DACL protection. Existing explicit ACEs remain in place.
+      </p>
+    </section>
+
+    <section class="section">
+      <h2>Permission Changes</h2>
+      <h3>Add modify access</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --add "principal=DOMAIN\\alice,perm=modify,flags=OICI,type=A" \
+  --dry-run</code></pre>
+
+      <h3>Add full control to Domain Admins and apply</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --add "principal=DA,perm=full,flags=OICI,type=A" \
+  --apply</code></pre>
+
+      <h3>Add a deny ACE</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --add "principal=DOMAIN\\tempuser,perm=read,flags=OICI,type=D" \
+  --dry-run</code></pre>
+    </section>
+
+    <section class="section">
+      <h2>Removing Entries</h2>
+      <h3>Remove by list index</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --remove-index 2 \
+  --dry-run</code></pre>
+
+      <h3>Remove by principal and ACE type</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --remove "principal=DU,type=A" \
+  --dry-run</code></pre>
+
+      <h3>Remove by SID and mask</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --remove "sid=S-1-5-21-100-200-300-400,mask=0x001200a9" \
+  --dry-run</code></pre>
+
+      <h3>Remove only inherited entries matching a filter</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --remove "principal=DOMAIN\\contractors,inherited=yes" \
+  --dry-run</code></pre>
+    </section>
+
+    <section class="section">
+      <h2>Wide Examples</h2>
+      <h3>Prepare a finance folder for custom ACLs</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --disable-inheritance \
+  --drop-inherited \
+  --add "principal=DA,perm=full,flags=OICI,type=A" \
+  --add "principal=DOMAIN\\finance-managers,perm=modify,flags=OICI,type=A" \
+  --add "principal=DOMAIN\\finance-readers,perm=read,flags=OICI,type=A" \
+  --dry-run</code></pre>
+
+      <h3>Apply the same ACL plan for real</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --disable-inheritance \
+  --drop-inherited \
+  --add "principal=DA,perm=full,flags=OICI,type=A" \
+  --add "principal=DOMAIN\\finance-managers,perm=modify,flags=OICI,type=A" \
+  --add "principal=DOMAIN\\finance-readers,perm=read,flags=OICI,type=A" \
+  --apply</code></pre>
+
+      <h3>Re-enable inheritance after a temporary lockdown</h3>
+      <pre><code>python3 ntacl_tool.py set /srv/shares/finance/private \
+  --enable-inheritance \
+  --apply</code></pre>
+    </section>
+
+    <section class="section">
+      <h2>Operational Notes</h2>
+      <ul>
+        <li>The tool warns if <code>DA</code> does not end up with full control in the final ACL.</li>
+        <li>Name resolution depends on <code>wbinfo</code>.</li>
+        <li>ACL parsing is pragmatic, not a full SDDL implementation.</li>
+        <li>Always start with <code>show</code> or <code>--dry-run</code> before using <code>--apply</code>.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>
