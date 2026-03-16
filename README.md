@@ -1,45 +1,45 @@
 # ntacl_tool
 
-Ferramenta em Python para inspecionar e alterar ACLs NT (SDDL) em arquivos e diretórios via `samba-tool`.
+Python utility for inspecting and changing NT ACLs (SDDL) on files and directories through `samba-tool`.
 
-O script foi pensado para ambientes Samba/Active Directory em que você precisa:
+The script is intended for Samba / Active Directory environments where you need to:
 
-- Consultar a ACL NT atual de um caminho.
-- Visualizar owner, group, herança e ACEs de forma legível.
-- Quebrar herança da ACL.
-- Adicionar ou remover permissões.
-- Aplicar alterações de forma interativa ou direta por parâmetros.
+- Inspect the current NT ACL of a path.
+- View owner, group, inheritance, and ACEs in a readable format.
+- Disable or re-enable ACL inheritance.
+- Add or remove permissions.
+- Apply changes either interactively or directly through command-line parameters.
 
-## O que o projeto faz
+## What This Project Does
 
-O projeto contém um único script principal: [ntacl_tool.py](./ntacl_tool.py).
+The project contains a single main script: [ntacl_tool.py](./ntacl_tool.py).
 
-Ele usa:
+It uses:
 
-- `samba-tool ntacl get --as-sddl` para ler a ACL atual.
-- `samba-tool ntacl set` para aplicar a ACL final.
-- `wbinfo` para resolver nomes e SIDs quando necessário.
+- `samba-tool ntacl get --as-sddl` to read the current ACL.
+- `samba-tool ntacl set` to apply the final ACL.
+- `wbinfo` to resolve names and SIDs when needed.
 
-## Modos de uso
+## Usage Modes
 
-O script suporta dois estilos de operação:
+The script supports two operation styles:
 
-- Modo interativo: abre um menu com staging das alterações antes de aplicar.
-- Modo direto: recebe alterações por parâmetros, útil para automação e scripts.
+- Interactive mode: opens a menu with staging before applying changes.
+- Direct mode: receives changes through parameters, useful for automation and scripts.
 
-Subcomandos disponíveis:
+Available subcommands:
 
-- `interactive`: abre o menu interativo.
-- `show`: mostra a ACL atual.
-- `set`: altera a ACL por parâmetros.
+- `interactive`: opens the interactive menu.
+- `show`: displays the current ACL.
+- `set`: changes the ACL through parameters.
 
-Se você executar o script sem argumentos, ele mostra um help completo com todas as funcionalidades e exemplos.
+If you run the script without arguments, it displays a full help message with all supported features and examples.
 
-## Dependências
+## Dependencies
 
 ### Python
 
-O script usa apenas bibliotecas padrão do Python 3:
+The script uses only Python 3 standard library modules:
 
 - `argparse`
 - `json`
@@ -49,124 +49,124 @@ O script usa apenas bibliotecas padrão do Python 3:
 - `dataclasses`
 - `typing`
 
-Não há dependências Python para instalar via `pip`.
+There are no Python dependencies to install with `pip`.
 
-### Pacotes necessários no Debian
+### Required Debian Packages
 
-Para o script funcionar no Debian, os componentes mínimos são:
+For the script to work on Debian, the minimum required components are:
 
-- `python3`: interpretador Python.
-- `samba-common-bin`: fornece o comando `samba-tool`.
-- `winbind`: fornece o comando `wbinfo`.
+- `python3`: Python interpreter.
+- `samba-common-bin`: provides the `samba-tool` command.
+- `winbind`: provides the `wbinfo` command.
 
-Comando pronto para instalação:
+Ready-to-use installation command:
 
 ```bash
 sudo apt update
 sudo apt install -y python3 samba-common-bin winbind
 ```
 
-Referências oficiais Debian usadas para confirmar os pacotes:
+Official Debian package references used to confirm the packages:
 
-- `samba-tool` aparece no pacote `samba-common-bin`:
+- `samba-tool` is provided by `samba-common-bin`:
   https://packages.debian.org/bookworm/amd64/samba-common-bin/filelist
-- `wbinfo` aparece no pacote `winbind`:
+- `wbinfo` is provided by `winbind`:
   https://packages.debian.org/sid/amd64/winbind/filelist
-- detalhes do pacote `winbind` no Debian:
+- `winbind` package details on Debian:
   https://packages.debian.org/bookworm/winbind
 
-## Observações importantes sobre o ambiente
+## Important Environment Notes
 
-Instalar os pacotes não é suficiente por si só se o servidor não estiver corretamente integrado ao ambiente Samba/AD.
+Installing the packages alone is not sufficient if the server is not correctly integrated with the Samba / AD environment.
 
-Na prática, para o script funcionar de forma útil, o host normalmente precisa:
+In practice, for the script to work usefully, the host usually needs to:
 
-- Ter acesso ao ambiente Samba/AD.
-- Conseguir executar `samba-tool ntacl`.
-- Conseguir resolver usuários e grupos com `wbinfo`.
+- Have access to the Samba / AD environment.
+- Be able to execute `samba-tool ntacl`.
+- Be able to resolve users and groups through `wbinfo`.
 
-Se `wbinfo` não resolver nomes/SIDs, o script ainda pode funcionar parcialmente, mas a exibição amigável de identidades e algumas operações por nome podem falhar.
+If `wbinfo` cannot resolve names or SIDs, the script may still work partially, but friendly identity display and some name-based operations may fail.
 
-## Exemplos de uso
+## Usage Examples
 
-### Mostrar a ajuda geral
+### Show General Help
 
 ```bash
 python3 ntacl_tool.py
 ```
 
-ou:
+or:
 
 ```bash
 python3 ntacl_tool.py --help
 ```
 
-### Modo interativo
+### Interactive Mode
 
 ```bash
-python3 ntacl_tool.py interactive /caminho/pasta
+python3 ntacl_tool.py interactive /path/folder
 ```
 
-### Consultar ACL atual
+### Show Current ACL
 
 ```bash
-python3 ntacl_tool.py show /caminho/pasta
+python3 ntacl_tool.py show /path/folder
 ```
 
-### Consultar ACL em JSON
+### Show Current ACL as JSON
 
 ```bash
-python3 ntacl_tool.py show /caminho/pasta --json
+python3 ntacl_tool.py show /path/folder --json
 ```
 
-### Desativar herança sem aplicar
+### Disable Inheritance Without Applying
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta --disable-inheritance --dry-run
+python3 ntacl_tool.py set /path/folder --disable-inheritance --dry-run
 ```
 
-Para desativar herança removendo ACEs herdadas:
+To disable inheritance and remove inherited ACEs:
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta --disable-inheritance --drop-inherited --dry-run
+python3 ntacl_tool.py set /path/folder --disable-inheritance --drop-inherited --dry-run
 ```
 
-Para reativar herança:
+To re-enable inheritance:
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta --enable-inheritance --dry-run
+python3 ntacl_tool.py set /path/folder --enable-inheritance --dry-run
 ```
 
-### Adicionar permissão
+### Add a Permission
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta \
-  --add "principal=DOM\\usuario,perm=modify,flags=OICI,type=A" \
+python3 ntacl_tool.py set /path/folder \
+  --add "principal=DOMAIN\\user,perm=modify,flags=OICI,type=A" \
   --dry-run
 ```
 
-Campos aceitos em `--add`:
+Accepted fields for `--add`:
 
-- `principal` ou `sid`: usuário, grupo, alias conhecido ou SID.
-- `perm` ou `mask`: `read`, `modify`, `full` ou uma máscara hexadecimal.
-- `flags`: flags de herança, por exemplo `OICI`.
-- `type`: `A` para allow ou `D` para deny.
+- `principal` or `sid`: user, group, known alias, or SID.
+- `perm` or `mask`: `read`, `modify`, `full`, or a hexadecimal mask.
+- `flags`: inheritance flags, for example `OICI`.
+- `type`: `A` for allow or `D` for deny.
 
-### Remover permissão por índice
+### Remove a Permission by Index
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta --remove-index 2 --dry-run
+python3 ntacl_tool.py set /path/folder --remove-index 2 --dry-run
 ```
 
-### Remover permissão por filtro
+### Remove a Permission by Filter
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta \
+python3 ntacl_tool.py set /path/folder \
   --remove "principal=DU,type=A" \
   --dry-run
 ```
 
-Exemplos de filtros aceitos em `--remove`:
+Examples of accepted filters in `--remove`:
 
 - `principal=DU`
 - `sid=S-1-5-...`
@@ -175,38 +175,41 @@ Exemplos de filtros aceitos em `--remove`:
 - `mask=0x001200a9`
 - `inherited=yes`
 
-### Aplicar de fato a ACL final
+### Apply the Final ACL for Real
 
 ```bash
-python3 ntacl_tool.py set /caminho/pasta \
+python3 ntacl_tool.py set /path/folder \
   --disable-inheritance \
   --add "principal=DA,perm=full,flags=OICI,type=A" \
   --apply
 ```
 
-## Segurança operacional
+## Operational Safety
 
-O modo `set` não aplica alterações sem `--apply`.
+The `set` mode does not apply changes without `--apply`.
 
-Se você usar apenas `--dry-run`, o script:
+If you use only `--dry-run`, the script:
 
-- monta a ACL final;
-- mostra a ACL prevista;
-- mostra a SDDL final;
-- não executa `samba-tool ntacl set`.
+- builds the final ACL;
+- shows the predicted ACL;
+- shows the final SDDL;
+- does not run `samba-tool ntacl set`.
 
-O script também emite um aviso se não encontrar `DA` (`Domain Admins`) com controle total na ACL final.
+The script also emits a warning if it does not find `DA` (`Domain Admins`) with full control in the final ACL.
 
-## Limitações atuais
+## Current Limitations
 
-- O parser de SDDL é simplificado e pode não cobrir todos os formatos possíveis.
-- O projeto ainda não possui suíte de testes automatizados.
-- O comportamento depende das ferramentas externas `samba-tool` e `wbinfo`.
+- The SDDL parser is simplified and may not cover every possible format.
+- The project does not yet include an automated test suite.
+- Behavior depends on external tools such as `samba-tool` and `wbinfo`.
 
-## Estrutura do projeto
+## Project Structure
 
 ```text
 .
+├── doc/
+│   ├── manual-en.html
+│   └── manual-pt.html
 ├── ntacl_tool.py
 └── README.md
 ```
